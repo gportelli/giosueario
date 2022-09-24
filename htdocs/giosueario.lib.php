@@ -87,7 +87,7 @@ class Giosueario {
 					if(date("j", $day) == date("j") && date("n", $day) == date("n") && date("Y", $day) == date("Y")) {
 						$style = 'currDay';
 					}
-					echo "<td class='$style'>";
+					echo "<td class='$style' valign='top'>";
 					echo date("j", $day);
 					echo "<br/>";
 					echo $this->getTurno($day);
@@ -119,9 +119,22 @@ class Giosueario {
 		if($t<0) $t += 5;
 		
 		//echo date('w', $day);
-		if($t == 4 && date('w', $day) == 2) $t = 6; // Se il riposo cade di martedì si fa aggiornamento
+		//if($t == 4 && date('w', $day) == 2) $t = 6; // Se il riposo cade di martedì si fa aggiornamento
 		
-		return $turni[$t];
+		$res = $turni[$t];
+		if($t < count(Statics::times)) 
+		{
+			if(floor($a / 5) == 3)
+			{
+				$res .= "<br/>" . Statics::times_forth_week[$t];
+			}
+			else
+			{
+				$res .= "<br/>" . Statics::times[$t];
+			}
+		}
+
+		return $res;
 	}
 	
 	public function getOffset() {

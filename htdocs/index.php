@@ -59,22 +59,6 @@ $g = new Giosueario();
 		<?php $g->drawCalendar(); ?>
 		</div>
 		
-		<div style="margin:auto; width:400px">
-			<table width="100%" cellpadding="4" cellspacing="1">
-				<tr>
-					<th colspan='2'>
-						Legenda Turni
-					</th>
-				</tr>
-				
-				<tr><td>Mattina</td><td>07 - 13</td></tr>
-				<tr><td>Pomeriggio</td><td>13 - 19</td></tr>
-				<tr><td>Sera</td><td>19 - 24</td></tr>
-				<tr><td>Notte</td><td>00 - 07</td></tr>
-				<tr><td>Aggiornamento</td><td>08 - 14</td></tr>
-				<tr><td>Fuori turno</td><td>Jolly</td></tr>
-			</table>
-		</div>
 	</div>
 </body>
 </html>
