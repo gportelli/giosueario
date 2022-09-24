@@ -1,5 +1,5 @@
 <?php
-include("config.inc.php");
+include("includes/config.inc.php");
 
 class Giosueario {
 	private function getCurrY() {
@@ -16,6 +16,8 @@ class Giosueario {
 				
 		echo "<input type='hidden' id='offset' value='" . $this->getOffset() . "'/>";
 		
+		echo "<span class='date-input'>";
+		
 		echo "<a href='?offset=" . $this->getOffset() . "&year=" . ($currY-1) . "&month=$currM'>&laquo</a> ";
 		
 		echo "<select id='year' name='year' onChange='update()'>";
@@ -26,6 +28,8 @@ class Giosueario {
 		echo "</select>";
 		
 		echo " <a href='?offset=" . $this->getOffset() . "&year=" . ($currY+1) . "&month=$currM'>&raquo</a> ";
+
+		echo "</span>";
 	}
 	
 	public function getMonthSelect() {
@@ -50,6 +54,8 @@ class Giosueario {
 			$nextY++;
 		}
 		
+		echo "<span class='date-input'>";
+
 		echo "<a href='?offset=" . $this->getOffset() . "&year=$prevY&month=$prevM'>&laquo</a> ";
 		
 		echo "<select id='month' name='month' onChange='update()'>";
@@ -60,6 +66,8 @@ class Giosueario {
 		echo "</select>";
 		
 		echo " <a href='?offset=" . $this->getOffset() . "&year=$nextY&month=$nextM'>&raquo</a> ";
+
+		echo "</span>";
 	}
 	
 	public function drawCalendar() {
@@ -105,36 +113,40 @@ class Giosueario {
 	private function getTurno($day) {
 		global $refDay; // lunedì - sera - inizio ciclo di 7 turni in quinta + 2 settimane fuori turno = 5 * 7 + 7 * 2 = 49 giorni
 		
-		$turni = Statics::shifts;
-		$delta  = round(($day - $refDay) / 3600 / 24); // Attenzione all'ora legale, che sfalsa gli offset di 1h
+		$delta  = round(($day - $refDay) / 3600 / 24); // Attenzione all'ora legale, che sfalsa gli offset di 1h (ref day starts at 1 a.m. instead of midnight)
 		$offset = $this->getOffset();
+		if($offset === "") $offset = 0;
+
+		$cicle_day = ($delta + $offset) % 49;
+        if($cicle_day < 0) $cicle_day += 49;
+
+		$turno = 0;
+		if($cicle_day < 35) $turno = $cicle_day % 5; else return Statics::shift_names[Shifts::OFF];
 		
-		if($offset === "") {
-			$a = $delta % 49;
-            if($a < 0) $a += 49;
-			if($a < 35) $t = $a % 5; else $t = 5;
-		}
-		else $t = ($delta + $offset) % 5;
-		
-		if($t<0) $t += 5;
+		if($turno<0) $turno += 5;
 		
 		//echo date('w', $day);
 		//if($t == 4 && date('w', $day) == 2) $t = 6; // Se il riposo cade di martedì si fa aggiornamento
-		
-		$res = $turni[$t];
-		if($t < count(Statics::times)) 
+
+		$forth_week = floor($cicle_day / 5) == 3;
+
+		$result = "";
+		foreach(Statics::shifts[$turno] as $value)
 		{
-			if(floor($a / 5) == 3)
+			$result .= "<p>".Statics::shift_names[$value];
+			
+			if(array_key_exists($value, Statics::times))
 			{
-				$res .= "<br/>" . Statics::times_forth_week[$t];
+				$index = 0;
+				if($forth_week && count(Statics::times[$value]) == 2) $index = 1;
+
+				$result .= "<br>" . Statics::times[$value][$index];
 			}
-			else
-			{
-				$res .= "<br/>" . Statics::times[$t];
-			}
+
+			$result .= "</p>";
 		}
 
-		return $res;
+		return $result;
 	}
 	
 	public function getOffset() {
