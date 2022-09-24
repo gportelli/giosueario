@@ -1,4 +1,6 @@
 <?php
+include("config.inc.php");
+
 class Giosueario {
 	private function getCurrY() {
 		return empty($_GET['year']) ? date("Y") : $_GET['year'];
@@ -27,9 +29,7 @@ class Giosueario {
 	}
 	
 	public function getMonthSelect() {
-		$months = array(
-				"Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"
-		);
+		$months = Statics::months;
 	
 		$currY = $this->getCurrY();
 		$currM = $this->getCurrM();
@@ -71,7 +71,7 @@ class Giosueario {
 		if($wd == 0) $wd = 6; else $wd = $wd - 1;
 		$startDay -= $wd * 3600 * 24;
 		
-		$days = array("Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica");
+		$days = Statics::days;
 		
 		echo "<table cellspacing='1' cellpadding='4' width='100%'>";
 		
@@ -103,9 +103,10 @@ class Giosueario {
 	}
 	
 	private function getTurno($day) {
-		$turni = array("Sera", "Pomeriggio", "Mattina", "Notte", "Riposo", "Fuori turno", "Aggiornamento");
-		$refDay = mktime(1, 0, 0, 3, 10, 2014); // lunedì - sera - inizio ciclo di 7 turni in quinta + 2 settimane fuori turno = 5 * 7 + 7 * 2 = 49 giorni
-		$delta  =  round(($day - $refDay) / 3600 / 24); // Attenzione all'ora legale, che sfalsa gli offset di 1h
+		global $refDay; // lunedì - sera - inizio ciclo di 7 turni in quinta + 2 settimane fuori turno = 5 * 7 + 7 * 2 = 49 giorni
+		
+		$turni = Statics::shifts;
+		$delta  = round(($day - $refDay) / 3600 / 24); // Attenzione all'ora legale, che sfalsa gli offset di 1h
 		$offset = $this->getOffset();
 		
 		if($offset === "") {
