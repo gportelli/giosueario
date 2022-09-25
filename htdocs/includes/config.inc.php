@@ -46,4 +46,4 @@ class Statics
 
 // First day of an entire cycle
 // hour, minute, second, month, day, year
-$refDay = mktime(1, 0, 0, 9, 1, 2022);
+$refDay = mktime(1, 0, 0, 9, 6, 2022);
