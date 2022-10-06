@@ -40,7 +40,7 @@ class Statics
 		Shifts::MORNING => array("07:00 - 13:00", "08:00 - 14:00"), 
 		Shifts::AFTERNOON => array("13:00 - 19:00"),
 		Shifts::EVENING => array("19:00 - 24:00"),
-		Shifts::NIGHT=> array("24:00 - 07:00")
+		Shifts::NIGHT=> array("00:00 - 07:00")
 	);
 }
 
